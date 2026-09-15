@@ -99,9 +99,7 @@ GATEKEEP.AI is a preventive privacy aid. It is not a guarantee that sensitive in
   </tr>
 </table>
 
-<p align="center">
-  <img src="assets/project-photo.jpg" alt="GATEKEEP.AI Project Photo" width="300">
-</p>
+
 
 ## Supported detection examples
 
