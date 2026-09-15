@@ -2,6 +2,14 @@
 
 ## A local privacy firewall for safer AI use
 
+<p align="center">
+  <img src="assets/pw128.png" alt="GATEKEEP.AI Logo" width="100">
+</p>
+
+<p align="center">
+  <img src="assets/PrivacyFirewall.gif" alt="GATEKEEP.AI Demo" width="700">
+</p>
+
 **GATEKEEP.AI** is a Chrome extension that helps prevent users from accidentally pasting personally identifiable information (PII), credentials, and other sensitive content into browser-based AI tools. It scans text locally in the browser, warns or blocks before submission, and provides an explainable reason for the intervention.
 
 > **Idea submission:** Give every AI prompt a privacy checkpoint before sensitive information leaves the user’s browser.
@@ -61,6 +69,39 @@ flowchart LR
 GATEKEEP.AI is intended to process scanned text locally in the browser. The repository does not contain a project backend, analytics endpoint, or application API key. The model runtime may contact its model provider when downloading model assets on first use, depending on the browser cache and deployment configuration. Users should verify network behavior in their own environment before making an offline or zero-network claim.
 
 GATEKEEP.AI is a preventive privacy aid. It is not a guarantee that sensitive information can never leave a device, and it does not replace organizational policy, access controls, or a complete enterprise DLP system.
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/modal-screenshot.png" alt="Block Modal"><br>
+      <strong>Paste Blocked</strong><br>
+      <em>Sensitive data detected with highlighting</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/banner-screenshot.png" alt="Warning Banner"><br>
+      <strong>Typing Warning</strong><br>
+      <em>Real-time detection as you type</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/popup-screenshot.png" alt="Extension Popup"><br>
+      <strong>Extension Popup</strong><br>
+      <em>Quick status and settings access</em>
+    </td>
+    <td align="center">
+      <img src="assets/settings-screenshot.png" alt="Settings"><br>
+      <strong>Settings Page</strong><br>
+      <em>Full control over detection rules</em>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="assets/project-photo.jpg" alt="GATEKEEP.AI Project Photo" width="300">
+</p>
 
 ## Supported detection examples
 
