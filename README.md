@@ -1,354 +1,214 @@
-<p align="center">
-  <img src="assets/pw128.png" alt="PrivacyFirewall Logo" width="100">
-</p>
+# GATEKEEP.AI
 
-<h1 align="center">PrivacyFirewall</h1>
+## A local privacy firewall for safer AI use
 
-👋 **If you're trying PrivacyFirewall, please star the repo!** 
-> It helps others discover the project and motivates development.
-> Takes 2 seconds → ⭐ (top right)
+**GATEKEEP.AI** is a Chrome extension that helps prevent users from accidentally pasting personally identifiable information (PII), credentials, and other sensitive content into browser-based AI tools. It scans text locally in the browser, warns or blocks before submission, and provides an explainable reason for the intervention.
 
-<p align="center">
-  <strong>Stop AI Data Leaks Before They Happen</strong><br>
-  100% Local • Zero Server • Full Control
-</p>
+> **Idea submission:** Give every AI prompt a privacy checkpoint before sensitive information leaves the user’s browser.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome&logoColor=white" alt="Chrome Extension">
-  <img src="https://img.shields.io/badge/AI-ONNX%20Runtime-FF6F00?logo=onnx&logoColor=white" alt="ONNX Runtime">
-  <img src="https://img.shields.io/badge/Privacy-100%25%20Local-34A853" alt="100% Local">
-  <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License">
-</p>
+## Problem
 
-<p align="center">
-  <img src="assets/PrivacyFirewall.gif" alt="PrivacyFirewall Demo" width="700">
-</p>
+People increasingly paste customer records, source code, credentials, internal documents, and personal information into public AI interfaces. Conventional data-loss-prevention tools are often enterprise-heavy, server-dependent, or disconnected from the point where the data is submitted. A user may not realize that a prompt contains an email address, phone number, token, private key, or named person until after the data has already been shared.
 
----
+## Proposed solution
 
-## The Problem
+GATEKEEP.AI places a privacy checkpoint directly inside supported AI websites. It combines two local detection layers:
 
-Every day, sensitive data gets leaked to AI chatbots:
+1. **Pattern detection** identifies structured secrets and PII such as email addresses, phone numbers, payment-card patterns, IP addresses, JWTs, and private-key headers.
+2. **On-device named-entity recognition** identifies less-structured entities such as person names, organizations, and locations when the local model is available.
 
-- 📧 **Customer emails** pasted into ChatGPT for summarization
-- 🔑 **API keys** accidentally included in code snippets
-- 👤 **Employee names** shared in meeting notes
-- 💳 **Credit card numbers** copied from support tickets
-- 🏠 **Home addresses** in shipping data analysis
+Depending on the user’s settings, the extension can warn the user or block the action. A future redaction workflow can replace detected values with safe placeholders. The design goal is that sensitive text is inspected at the point of interaction rather than sent to a GATEKEEP.AI server.
 
-**Traditional DLP tools don't protect AI chat interfaces.** PrivacyFirewall does.
+## Why it matters
 
----
+GATEKEEP.AI is designed for students, developers, researchers, and organizations that use AI tools but need a practical last-mile privacy control. It addresses accidental data exposure at the user interaction layer without requiring a project backend or a separate enterprise gateway.
 
-## The Solution
+## Current capabilities
 
-**PrivacyFirewall** intercepts sensitive data *before* it reaches AI tools — running **entirely in your browser** with no external servers.
+- Chrome Manifest V3 extension architecture.
+- Paste and typing interception on configured AI websites.
+- Fast pattern-based scanning for common sensitive-data formats.
+- Optional local Transformer-based named-entity detection.
+- Warning banner and blocking modal user experiences.
+- Popup and settings pages for behavior and detection preferences.
+- Protected-site configuration for supported AI services.
+- Offscreen-document execution for the browser-side model.
+- No project backend or telemetry service.
+- Local settings and auditable source code.
 
-### Key Features
-
-| Feature | Description |
-|---------|-------------|
-| 🛡️ **Paste Protection** | Blocks sensitive pastes with a confirmation modal |
-| ⌨️ **Real-time Typing Detection** | Warns as you type sensitive data |
-| 🧠 **Local AI Detection** | BERT NER model runs in-browser via ONNX/WASM |
-| ⚙️ **Configurable Rules** | Enable/disable specific PII types, set block vs warn |
-| 🌐 **Site Management** | Protect ChatGPT, Claude, Gemini, Copilot, and more |
-| 🔒 **Zero Data Transmission** | Nothing ever leaves your machine |
-
----
-
-## How It Works
-
-```mermaid
-graph TD
-    A[User Pastes/Types Text] -->|Intercept| B(Content Script)
-    B -->|Layer 1| C{Regex Scan}
-    C -->|Match Found| D{Block or Warn?}
-    D -->|Block| E[🛑 Show Modal]
-    D -->|Warn| F[⚠️ Show Banner]
-    C -->|No Match| G{AI Engine Ready?}
-    G -->|Yes| H[ONNX Model in Browser]
-    H -->|Entities Found| D
-    H -->|Clean| I[✅ Allow]
-    G -->|No| I
-
-    style E fill:#dc2626,color:#fff
-    style F fill:#f59e0b,color:#fff
-    style I fill:#22c55e,color:#fff
-```
-
-### Two-Layer Protection
-
-1. **Instant Regex Layer** — Catches obvious patterns (emails, credit cards, API keys) in milliseconds
-2. **AI Layer** — BERT Named Entity Recognition detects names, organizations, and locations that regex misses
-
-Both layers run **100% locally** in your browser. No Python server. No API calls. No cloud.
-
----
-
-## Quick Start
-
-### Option 1: Download & Install (No Code Required)
-
-> **Perfect for trying it out** — takes 30 seconds
-
-1. **Download** the latest release:
-
-   [![Download Extension](https://img.shields.io/badge/Download-Latest%20Release-4285F4?style=for-the-badge&logo=googlechrome)](https://github.com/privacyshield-ai/privacy-firewall/releases/download/v2.0.0/privacyfirewall-extension.zip)
-
-2. **Unzip** the downloaded file
-
-3. **Install in Chrome**:
-   - Go to `chrome://extensions`
-   - Enable **Developer mode** (toggle in top right)
-   - Click **Load unpacked**
-   - Select the unzipped folder
-
-4. **Done!** Visit [ChatGPT](https://chat.openai.com) and try pasting:
-   ```
-   Contact john.doe@company.com or call 555-123-4567
-   ```
-
----
-
-### Option 2: Build from Source (For Developers)
-
-<details>
-<summary>Click to expand developer instructions</summary>
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/ArnabKar/privacy-firewall.git
-   cd privacy-firewall
-   ```
-
-2. **Build the extension**
-   ```bash
-   cd src/extension
-   npm install
-   node build.js
-   ```
-
-3. **Load in Chrome**
-   - Navigate to `chrome://extensions`
-   - Enable **Developer mode** (top right)
-   - Click **Load unpacked**
-   - Select the `src/extension/dist` folder
-
-</details>
-
----
-
-## Screenshots
-
-<table>
-  <tr>
-    <td align="center" width="50%">
-      <img src="assets/modal-screenshot.png" alt="Block Modal"><br>
-      <strong>Paste Blocked</strong><br>
-      <em>Sensitive data detected with highlighting</em>
-    </td>
-    <td align="center" width="50%">
-      <img src="assets/banner-screenshot.png" alt="Warning Banner"><br>
-      <strong>Typing Warning</strong><br>
-      <em>Real-time detection as you type</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="assets/popup-screenshot.png" alt="Popup"><br>
-      <strong>Extension Popup</strong><br>
-      <em>Quick status and settings access</em>
-    </td>
-    <td align="center">
-      <img src="assets/settings-screenshot.png" alt="Settings"><br>
-      <strong>Settings Page</strong><br>
-      <em>Full control over detection rules</em>
-    </td>
-  </tr>
-</table>
-
----
-
-## Detection Coverage
-
-### Regex Detection (Instant)
-
-| Type | Examples |
-|------|----------|
-| 📧 Email | `user@example.com` |
-| 📱 Phone | `555-123-4567`, `+1 (555) 123-4567` |
-| 💳 Credit Card | `4532-0151-1283-0366` |
-| 🔢 SSN | `123-45-6789` |
-| 🔑 AWS Keys | `AKIAIOSFODNN7EXAMPLE` |
-| 🎫 JWT Tokens | `eyJhbGciOiJIUzI1NiJ9...` |
-| 🔐 Private Keys | `-----BEGIN RSA PRIVATE KEY-----` |
-| 🌐 IP Addresses | `192.168.1.1` |
-| 📍 MAC Addresses | `00:1A:2B:3C:4D:5E` |
-| 🏠 US Addresses | `123 Main St, New York, NY 10001` |
-
-### AI Detection (BERT NER)
-
-| Entity Type | Examples |
-|-------------|----------|
-| 👤 PERSON | `John Smith`, `Dr. Sarah Thompson` |
-| 🏢 ORGANIZATION | `Acme Corp`, `Goldman Sachs` |
-| 📍 LOCATION | `New York`, `Silicon Valley` |
-
----
-
-## Configuration
-
-### Settings Page
-
-Access via the extension popup → **Open Settings**
-
-- **PII Rules**: Enable/disable detection for each type
-- **Block vs Warn**: Choose blocking modal or warning banner
-- **Protected Sites**: Manage which AI tools are protected
-- **AI Confidence**: Adjust sensitivity threshold (0-100%)
-- **Behavior**: Toggle real-time typing detection
-
-### Protected Sites (Default)
-
-- ✅ ChatGPT (`chat.openai.com`, `chatgpt.com`)
-- ✅ Claude (`claude.ai`)
-- ✅ Gemini (`gemini.google.com`)
-- ✅ Copilot (`copilot.microsoft.com`)
-- ✅ Poe (`poe.com`)
-- ✅ Grok (`grok.com`)
-- ✅ DeepSeek (`chat.deepseek.com`)
-
----
+The AI model is downloaded by the browser runtime on first use when it is not already cached. This is different from sending scanned prompt text to a remote GATEKEEP.AI server.
 
 ## Architecture
 
+```mermaid
+flowchart LR
+    A[User types or pastes prompt] --> B[Content script]
+    B --> C[Local pattern scanner]
+    B --> D[Local NER scanner]
+    D --> E[Offscreen model runtime]
+    C --> F{Sensitive content?}
+    E --> F
+    F -->|No| G[Allow action]
+    F -->|Yes| H[Explainable warning or block]
+    H --> I[User decides what to do]
+    J[Popup and settings] --> K[Chrome storage]
+    K --> C
+    K --> D
 ```
+
+## Privacy boundary
+
+GATEKEEP.AI is intended to process scanned text locally in the browser. The repository does not contain a project backend, analytics endpoint, or application API key. The model runtime may contact its model provider when downloading model assets on first use, depending on the browser cache and deployment configuration. Users should verify network behavior in their own environment before making an offline or zero-network claim.
+
+GATEKEEP.AI is a preventive privacy aid. It is not a guarantee that sensitive information can never leave a device, and it does not replace organizational policy, access controls, or a complete enterprise DLP system.
+
+## Supported detection examples
+
+| Detection layer | Examples |
+|---|---|
+| Pattern rules | Email addresses, phone numbers, payment-card patterns, SSN-like patterns, AWS-style keys, JWTs, private-key headers, IP addresses, MAC addresses |
+| Local NER model | Person, organization, and location entities |
+| User controls | Enable or disable rules, warning or blocking behavior, protected sites, confidence threshold, typing detection |
+
+Detection patterns are heuristics. They can produce false positives and false negatives. Do not use the prototype as the sole control for regulated or safety-critical data.
+
+## Technology stack
+
+- Chrome Manifest V3
+- JavaScript ES modules
+- `@huggingface/transformers`
+- ONNX Runtime Web / WebAssembly
+- Chrome Offscreen Documents API
+- Shadow DOM UI isolation
+- Node.js and esbuild
+
+## Repository structure
+
+```text
 src/extension/
-├── manifest.json          # Chrome MV3 manifest
-├── background.js          # Service worker (message routing)
-├── content-script.js      # Page injection (paste/typing interception)
-├── offscreen.js           # AI model execution environment
-├── offscreen.html         # Offscreen document container
+├── manifest.json
+├── background.js
+├── content-script.js
+├── offscreen.js
+├── offscreen.html
+├── build.js
 ├── lib/
-│   └── transformer-detector.js  # BERT NER model wrapper
+│   └── transformer-detector.js
 ├── modules/
-│   ├── config.js          # Regex patterns & constants
-│   ├── scanner.js         # Detection orchestration
-│   ├── settings.js        # Chrome storage management
-│   ├── event-handlers.js  # Paste & input handlers
+│   ├── config.js
+│   ├── scanner.js
+│   ├── event-handlers.js
+│   ├── settings.js
 │   └── ui/
-│       ├── modal.js       # Blocking modal component
-│       ├── banner.js      # Warning banner component
-│       └── styles.js      # Shadow DOM styles
 └── ui/
-    ├── popup.html/js/css  # Extension popup
-    └── settings.html/js/css # Settings page
+    ├── popup.html/js/css
+    └── settings.html/js/css
 ```
 
-### Technology Stack
+## Run locally
 
-- **Extension**: Chrome Manifest V3, ES Modules
-- **AI Runtime**: ONNX Runtime Web (WASM)
-- **Model**: `Xenova/bert-base-NER-uncased` via Hugging Face Transformers.js
-- **UI Isolation**: Shadow DOM (no CSS conflicts with host pages)
+### Prerequisites
 
----
+- Node.js 18 or newer.
+- Google Chrome 120 or newer is recommended because the prototype uses the Offscreen Documents API.
+- Internet access may be required on first model load unless the model is already cached.
 
-## Privacy & Security
-
-### What We DON'T Do
-
-- ❌ Send data to external servers
-- ❌ Log or store your text
-- ❌ Use analytics or telemetry
-- ❌ Make any network requests (except model download on first run)
-
-### What We DO
-
-- ✅ Process everything locally in your browser
-- ✅ Cache the AI model locally after first download
-- ✅ Store settings in Chrome's encrypted sync storage
-- ✅ Provide fully auditable open-source code
-
-**Verify yourself**: Open DevTools → Network tab. You'll see zero outbound requests during detection.
-
----
-
-## Development
-
-### Build
+### Build the extension
 
 ```bash
-cd src/extension
-npm install
-node build.js
+git clone https://github.com/gokulrajmisox/GATEKEEP.AI.git
+cd GATEKEEP.AI/src/extension
+npm ci
+npm run build
 ```
 
-### Run Tests
+The build output is created in `src/extension/dist/` and is intentionally ignored by Git.
 
-```bash
-node tests/content-script.test.js
+### Load it in Chrome
+
+1. Open `chrome://extensions`.
+2. Enable **Developer mode**.
+3. Choose **Load unpacked**.
+4. Select `src/extension/dist/`.
+5. Open an enabled AI website and test with synthetic values only.
+
+Example test input:
+
+```text
+Contact demo.user@example.com about ticket 555-0100.
 ```
 
-### Project Requirements
+Do not test with real credentials, private keys, customer data, or production secrets.
 
-- Chrome 120+ (for Offscreen Documents API)
-- Node.js 18+ (for building)
+## Idea-submission positioning
 
----
+### Suggested title
 
-## Troubleshooting
+**GATEKEEP.AI: A Local Privacy Firewall for Resilient and Responsible AI Interaction**
 
-### "AI Model Loading..." stays forever
+### Short pitch
 
-- Check DevTools console for errors
-- The model (~50MB) downloads on first run — may take a minute on slow connections
-- Try clearing extension data and reloading
+GATEKEEP.AI is a browser-level privacy firewall that detects PII and secrets before users submit prompts to AI tools. It combines fast pattern matching with optional local named-entity recognition, then warns or blocks the action with an explainable reason. Because the scan is performed at the point of interaction and the project has no application backend, it offers a practical, low-friction control for reducing accidental data exposure during everyday AI use.
 
-### Extension doesn't detect on some sites
+### Differentiation
 
-- Check if the site is in your protected sites list
-- Some sites use iframes — detection may be limited
-- Open an issue with the site URL
+The project is not another chatbot or document scanner. Its key design decision is **pre-submission enforcement at the browser interaction boundary**. This makes the control visible to the user at the moment of risk and avoids requiring every organization to integrate a separate server-side gateway.
 
-### False positives/negatives
+### Demonstration flow
 
-- Adjust AI confidence threshold in settings
-- Some patterns (like short names) may not be detected
-- Report edge cases as issues
+1. Open the extension settings and enable the pattern and local-NER detectors.
+2. Paste a synthetic email address and phone number into a supported AI site.
+3. Show the highlighted detection and explain why the action is blocked or warned.
+4. Paste a synthetic person or organization name to demonstrate the local NER layer.
+5. Change the policy from blocking to warning and repeat the test.
+6. Open the settings page to show configurable rules and protected sites.
+7. Inspect the browser network panel and explain the model-download behavior separately from prompt scanning.
 
----
+### Proposed evaluation
+
+| Measure | Evaluation method |
+|---|---|
+| Pattern precision and recall | Labeled synthetic corpus containing positive and negative examples |
+| NER precision and recall | Labeled sentences covering names, organizations, and locations |
+| Intervention latency | Time from paste/input event to warning or block |
+| False-positive rate | Benign prompts containing numbers, names, and code-like strings |
+| Coverage | Number of supported AI sites and input mechanisms tested |
+| Privacy behavior | Network inspection and source-code review during scanning |
+| Usability | User study measuring correction time and unintended submission rate |
+
+No performance number should be claimed until it has been measured on a documented test set and browser configuration.
+
+## Limitations
+
+- Browser DOM changes can break site-specific input handling.
+- Pattern rules are heuristic and are not complete secret detection.
+- The local NER model can miss entities or produce false positives.
+- Model assets are not bundled in this repository and may be downloaded on first use.
+- The prototype is currently focused on Chromium-based browsers.
+- A browser extension cannot control data submitted outside the configured browser context.
 
 ## Roadmap
 
-- [ ] Firefox/Safari support
-- [ ] Custom regex patterns via settings
-- [ ] Redaction mode (replace vs block)
-- [ ] Export/import settings
-- [ ] Keyboard shortcuts
-- [ ] Enterprise policy support
-
----
+- Add a reviewed redaction mode that replaces detected values with safe placeholders.
+- Add custom organization rules and importable policy profiles.
+- Add Firefox support after a compatibility review.
+- Add deterministic automated tests for each detection rule and supported input type.
+- Add an offline model packaging option with documented asset licensing.
+- Add exportable, privacy-preserving intervention statistics that users explicitly enable.
+- Add enterprise policy deployment documentation.
 
 ## Contributing
 
-PRs welcome! Please include:
-
-- Browser version
-- Steps to reproduce
-- Expected vs actual behavior
-
----
+Issues and pull requests are welcome. When reporting a problem, include the browser version, operating system, protected site, reproduction steps, expected behavior, and actual behavior. Never include real secrets or personal data in an issue, screenshot, or test fixture.
 
 ## License
 
-MIT License — see [LICENSE](LICENSE)
+This project is licensed under the [MIT License](LICENSE).
 
----
+The third-party dependencies and model assets used by the project may have separate licenses. Review their respective license files and model cards before redistribution.
 
-<p align="center">
-  <strong>Built for privacy. Runs locally. Open source.</strong><br>
-  <a href="https://github.com/ArnabKar/privacy-firewall/issues">Report Bug</a> •
-  <a href="https://github.com/ArnabKar/privacy-firewall/issues">Request Feature</a>
-</p>
+## Links
+
+- [Source repository](https://github.com/gokulrajmisox/GATEKEEP.AI)
+- [Issue tracker](https://github.com/gokulrajmisox/GATEKEEP.AI/issues)
+- [MIT License](LICENSE)

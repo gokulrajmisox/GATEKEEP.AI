@@ -1,8 +1,8 @@
 {  
   "manifest_version": 3,
-  "name": "PrivacyFirewall",
+  "name": "GATEKEEP.AI",
   "version": "0.1.2",
-  "description": "Prevent pasting secrets and PII into AI tools. 100% local. No data leaves your machine.",
+  "description": "A local privacy firewall that warns before sensitive data is submitted to AI tools.",
   
   "permissions": [
     "scripting",

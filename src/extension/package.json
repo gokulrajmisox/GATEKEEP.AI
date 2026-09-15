@@ -1,5 +1,5 @@
 {
-  "name": "extension",
+  "name": "gatekeep-ai-extension",
   "version": "1.0.0",
   "main": "background.js",
   "directories": {
@@ -16,6 +16,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": ""
+  "license": "MIT",
+  "description": "Local browser privacy firewall for safer AI interactions"
 }
