@@ -254,15 +254,4 @@ The third-party dependencies and model assets used by the project may have separ
 - [Issue tracker](https://github.com/gokulrajmisox/GATEKEEP.AI/issues)
 - [MIT License](LICENSE)
 
-## Media assets
 
-The repository includes the following demonstration media:
-
-- [Product demo GIF](assets/PrivacyFirewall.gif)
-- [Banner screenshot](assets/banner-screenshot.png)
-- [Modal screenshot](assets/modal-screenshot.png)
-- [Popup screenshot](assets/popup-screenshot.png)
-- [Settings screenshot](assets/settings-screenshot.png)
-- [Restored project photo](assets/project-photo.jpg)
-
-No video file was present in the repository history, so no video could be restored from Git. Add the original video file to `assets/` when it is available, and link it here.
