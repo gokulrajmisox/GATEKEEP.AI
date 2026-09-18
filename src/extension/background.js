@@ -212,7 +212,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Scan request from content script
   if (request.type === MESSAGE_TYPES.SCAN_TEXT) {
     console.log('[PrivacyWall] Received SCAN_TEXT request from content script');
-    console.log('[PrivacyWall] Text to scan:', request.text);
     console.log('[PrivacyWall] isModelReady:', isModelReady);
     
     scanWithAI(request.text)

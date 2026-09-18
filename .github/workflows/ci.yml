@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/extension/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run benchmark
+      - run: npm run build
+      - name: Validate manifest and release files
+        run: |
+          node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('dist/manifest.json')); if(m.web_accessible_resources) throw new Error('Unexpected web-accessible resources'); for(const f of ['background.js','content-script.js','offscreen.js','offscreen.html','ui/popup.html','ui/settings.html']) if(!fs.existsSync('dist/'+f)) throw new Error('Missing '+f); console.log('Manifest and release files valid')"
+      - run: npm audit --audit-level=critical

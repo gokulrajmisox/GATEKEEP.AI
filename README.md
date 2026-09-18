@@ -252,4 +252,48 @@ The third-party dependencies and model assets used by the project may have separ
 - [Issue tracker](https://github.com/gokulrajmisox/GATEKEEP.AI/issues)
 - [MIT License](LICENSE)
 
+## Engineering baseline
 
+This repository includes a reproducible quality baseline for the extension. The production path is intentionally local-first: regex detection runs in the content script, while optional NER runs in the extension offscreen document. No application backend is required for prompt scanning.
+
+### Commands
+
+```bash
+cd src/extension
+npm ci
+npm test                 # 44 deterministic regression tests
+npm run benchmark        # synthetic precision/recall/F1 and latency report
+npm run build            # release bundle in src/extension/dist/
+npm run audit            # high-severity dependency audit
+```
+
+The checked-in benchmark corpus contains 13 synthetic positive and benign cases. On the reference run in Node.js 22, the local detector achieved **100.0% precision, 100.0% recall, and 100.0% F1** on that corpus, with **0.007 ms p50** and **5.252 ms p95** scan latency. These are corpus-specific regression measurements, not a claim of general-world accuracy. The full machine-readable result is regenerated at `src/extension/reports/latest-benchmark.json` and must be expanded with labeled, representative data before making product claims.
+
+### Release and CI
+
+GitHub Actions runs the test suite, benchmark, production build, release-file validation, and a critical-severity dependency audit on every push and pull request. Load the generated `src/extension/dist/` directory in `chrome://extensions` with Developer mode enabled. The build copies the ONNX/WASM runtime and all extension UI assets without committing generated output.
+
+The manifest uses the smallest currently required permission set, explicitly targets Chromium 116+, and does **not** expose WASM resources to arbitrary websites. The extension still requires a documented review of model and dependency licenses before redistribution.
+
+### Demo flow
+
+Use synthetic values only:
+
+```text
+Contact demo.user@example.com about ticket 555-0100.
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+```
+
+1. Build and load `src/extension/dist/` as an unpacked extension.
+2. Open a supported AI site and paste the synthetic prompt.
+3. Confirm that the local detector presents a redacted finding and applies the configured warn/block policy.
+4. Toggle a rule in settings and repeat the test.
+5. For the optional AI engine, inspect the browser Network panel separately: a model-asset download is not a prompt-upload request.
+
+### Security and threat model
+
+See [THREAT_MODEL.md](THREAT_MODEL.md) for assets, trust boundaries, threats, mitigations, security invariants, verification steps, and residual risks. In particular, GATEKEEP.AI reduces accidental disclosure but cannot control provider-side retention, data entered outside supported sites, a compromised browser profile, or intentional user bypass.
+
+### Deployment note
+
+This project is a browser extension, not a server application. Its deployable artifact is the locally loadable `src/extension/dist/` bundle. A hosted marketing/demo page can be published independently, but hosting the extension itself on a web server does not install or update it; Chrome Web Store distribution and enterprise policy deployment are the appropriate production channels.

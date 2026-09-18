@@ -3,6 +3,7 @@
   "name": "GATEKEEP.AI",
   "version": "0.1.2",
   "description": "A local privacy firewall that warns before sensitive data is submitted to AI tools.",
+  "minimum_chrome_version": "116",
   
   "permissions": [
     "scripting",
@@ -50,14 +51,6 @@
   },
   
   "options_page": "ui/settings.html",
-  
-  "web_accessible_resources": [
-    {
-      "resources": ["wasm/*"],
-      "matches": ["<all_urls>"],
-      "extension_ids": []
-    }
-  ],
   
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"

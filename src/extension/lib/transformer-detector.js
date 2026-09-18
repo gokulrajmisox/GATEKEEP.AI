@@ -105,12 +105,8 @@ function getDescription(entity) {
 }
 
 export async function detectEntities(text, threshold=0.5){
-    console.log('[PrivacyWall AI] Scanning text:', text.substring(0, 100));
-    
     const ner = await initializeModel();
     const results = await ner(text);
-    
-    console.log('[PrivacyWall AI] Raw NER results:', results);
     
     // Filter by threshold and exclude MISC, O (outside) tags
     const filtered = results.filter(entity => {
@@ -203,5 +199,4 @@ export async function detectEntities(text, threshold=0.5){
     
     return deduplicated;
 }
-
 

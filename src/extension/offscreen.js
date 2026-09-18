@@ -67,7 +67,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('[PrivacyWall Offscreen] Received message:', message.type);
   
   if (message.type === 'SCAN_WITH_AI') {
-    console.log('[PrivacyWall Offscreen] Processing SCAN_WITH_AI for text:', message.text);
+    console.log('[PrivacyWall Offscreen] Processing scan request');
     
     if (!isModelReady) {
       console.log('[PrivacyWall Offscreen] Model not ready, returning error');
@@ -77,7 +77,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     detectEntities(message.text)
       .then(entities => {
-        console.log('[PrivacyWall Offscreen] Scan complete, entities:', entities);
+        console.log(`[PrivacyWall Offscreen] Scan complete (${entities.length} findings)`);
         sendResponse({ success: true, data: entities });
       })
       .catch(error => {
