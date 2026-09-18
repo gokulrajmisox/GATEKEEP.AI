@@ -11,6 +11,8 @@
     "test": "node tests/content-script.test.js",
     "benchmark": "node benchmarks/benchmark.js",
     "benchmark:json": "node benchmarks/benchmark.js --json",
+    "evaluate": "node benchmarks/evaluate.js",
+    "evaluate:ner": "node benchmarks/ner-evaluate.mjs",
     "audit": "npm audit --audit-level=critical"
   },
   "dependencies": {

@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-09-18T10:31:25.699Z",
+  "model": "Xenova/bert-base-NER-uncased",
+  "runtime": {
+    "node": "v22.13.0",
+    "cpuCount": 6,
+    "loadMs": 753,
+    "rssAfterMb": 319,
+    "heapUsedMb": 19
+  },
+  "cases": 6,
+  "totals": {
+    "tp": 7,
+    "fp": 0,
+    "fn": 0
+  },
+  "precision": 1,
+  "recall": 1,
+  "f1": 1,
+  "inferenceMedianMs": 11.128194,
+  "rows": [
+    {
+      "id": "person-positive",
+      "expected": [
+        "PERSON",
+        "ORGANIZATION",
+        "LOCATION"
+      ],
+      "detected": [
+        "PERSON",
+        "ORGANIZATION",
+        "LOCATION"
+      ],
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "latencyMs": 25.891899
+    },
+    {
+      "id": "person-positive-2",
+      "expected": [
+        "PERSON",
+        "LOCATION"
+      ],
+      "detected": [
+        "PERSON",
+        "LOCATION"
+      ],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "latencyMs": 11.128194
+    },
+    {
+      "id": "organization-positive",
+      "expected": [
+        "ORGANIZATION",
+        "LOCATION"
+      ],
+      "detected": [
+        "ORGANIZATION",
+        "LOCATION"
+      ],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "latencyMs": 9.758051
+    },
+    {
+      "id": "clean-prose",
+      "expected": [],
+      "detected": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "latencyMs": 10.639393
+    },
+    {
+      "id": "clean-code",
+      "expected": [],
+      "detected": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "latencyMs": 12.176616
+    },
+    {
+      "id": "clean-generic",
+      "expected": [],
+      "detected": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "latencyMs": 8.911146
+    }
+  ]
+}

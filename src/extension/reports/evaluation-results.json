@@ -1,0 +1,137 @@
+{
+  "generatedAt": "2026-09-18T10:32:20.676Z",
+  "runtime": {
+    "node": "v22.13.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpuCount": 6,
+    "rssBeforeMb": 69
+  },
+  "detector": {
+    "patternCount": 12,
+    "patternTypes": [
+      "email",
+      "phone_number",
+      "address",
+      "zipcode",
+      "mac_address",
+      "aws_key",
+      "private_key",
+      "ip_address",
+      "credit_card",
+      "ssn",
+      "api_key",
+      "jwt"
+    ]
+  },
+  "corpus": {
+    "totalCases": 13,
+    "positiveCases": 4,
+    "adversarialCases": 7,
+    "falsePositiveCases": 0
+  },
+  "regex": {
+    "tp": 4,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "falsePositiveRate": 0
+  },
+  "latencyMs": {
+    "median": 0.002829,
+    "p95": 0.006895,
+    "max": 1.017071
+  },
+  "memory": {
+    "rssAfterMb": 69,
+    "heapUsedMb": 5
+  },
+  "adversarial": [
+    {
+      "id": "email-obfuscated-dot-at",
+      "text": "john [dot] doe [at] gmail [dot] com",
+      "expected": [],
+      "detected": [],
+      "result": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "passed": true
+    },
+    {
+      "id": "email-spaced-symbols",
+      "text": "john.doe @ gmail.com",
+      "expected": [],
+      "detected": [],
+      "result": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "passed": true
+    },
+    {
+      "id": "aws-spaced",
+      "text": "AKIA XXXX XXXX",
+      "expected": [],
+      "detected": [],
+      "result": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "passed": true
+    },
+    {
+      "id": "jwt-spaced",
+      "text": "eyJhbGci OiJIUzI1NiJ9 . eyJ1c2VyIjoidGVzdCJ9 . dGVzdA",
+      "expected": [],
+      "detected": [],
+      "result": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "passed": true
+    },
+    {
+      "id": "unicode-at",
+      "text": "john.doe＠gmail.com",
+      "expected": [],
+      "detected": [],
+      "result": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "passed": true
+    },
+    {
+      "id": "unicode-dot",
+      "text": "john.doe@gmail。com",
+      "expected": [],
+      "detected": [],
+      "result": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "passed": true
+    },
+    {
+      "id": "punctuated-email",
+      "text": "john.doe<at>gmail<dot>com",
+      "expected": [],
+      "detected": [],
+      "result": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "passed": true
+    }
+  ]
+}

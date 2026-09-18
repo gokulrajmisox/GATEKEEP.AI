@@ -294,6 +294,8 @@ AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 
 See [THREAT_MODEL.md](THREAT_MODEL.md) for assets, trust boundaries, threats, mitigations, security invariants, verification steps, and residual risks. In particular, GATEKEEP.AI reduces accidental disclosure but cannot control provider-side retention, data entered outside supported sites, a compromised browser profile, or intentional user bypass.
 
+See [EVALUATION.md](EVALUATION.md) for measured detector quality, NER and regex latency, memory usage, false-positive rate, and adversarial-input behavior. The report deliberately documents current bypasses instead of presenting the firewall as a complete guarantee.
+
 ### Deployment note
 
 This project is a browser extension, not a server application. Its deployable artifact is the locally loadable `src/extension/dist/` bundle. A hosted marketing/demo page can be published independently, but hosting the extension itself on a web server does not install or update it; Chrome Web Store distribution and enterprise policy deployment are the appropriate production channels.
