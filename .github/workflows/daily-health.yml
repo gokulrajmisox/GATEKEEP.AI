@@ -1,0 +1,72 @@
+name: Daily health check
+
+on:
+  schedule:
+    - cron: '15 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-health
+  cancel-in-progress: false
+
+jobs:
+  verify-and-record:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/extension
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: src/extension/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run deterministic tests
+        run: npm test
+
+      - name: Run the regression benchmark
+        run: npm run benchmark
+
+      - name: Build the extension
+        run: npm run build
+
+      - name: Audit critical dependencies
+        run: npm run audit
+
+      - name: Record successful health check
+        working-directory: .
+        run: |
+          mkdir -p src/extension/reports
+          cat > src/extension/reports/daily-health.md <<EOF
+          # Daily health check
+
+          - **Date (UTC):** $(date -u +%F)
+          - **Commit checked:** ${GITHUB_SHA}
+          - **Tests:** passed (`npm test`)
+          - **Regression benchmark:** passed (`npm run benchmark`)
+          - **Extension build:** passed (`npm run build`)
+          - **Critical dependency audit:** passed (`npm run audit`)
+
+          This record is generated only after all checks complete successfully. It is a maintenance signal, not a product-security guarantee.
+          EOF
+
+      - name: Commit the health record when it changed
+        working-directory: .
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/extension/reports/daily-health.md
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: record daily health check"
+          git push

@@ -240,6 +240,8 @@ No performance number should be claimed until it has been measured on a document
 
 Issues and pull requests are welcome. When reporting a problem, include the browser version, operating system, protected site, reproduction steps, expected behavior, and actual behavior. Never include real secrets or personal data in an issue, screenshot, or test fixture.
 
+For suspected vulnerabilities, use the private reporting process in [SECURITY.md](SECURITY.md) instead of posting exploit details publicly.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
@@ -272,6 +274,8 @@ The checked-in benchmark corpus contains 13 synthetic positive and benign cases.
 ### Release and CI
 
 GitHub Actions runs the test suite, benchmark, production build, release-file validation, and a critical-severity dependency audit on every push and pull request. Load the generated `src/extension/dist/` directory in `chrome://extensions` with Developer mode enabled. The build copies the ONNX/WASM runtime and all extension UI assets without committing generated output.
+
+A separate daily workflow repeats the deterministic checks and records the successful result in [`src/extension/reports/daily-health.md`](src/extension/reports/daily-health.md). The record is generated only after tests, the benchmark, the build, and the critical dependency audit pass; it is a maintenance signal, not a security guarantee.
 
 The manifest uses the smallest currently required permission set, explicitly targets Chromium 116+, and does **not** expose WASM resources to arbitrary websites. The extension still requires a documented review of model and dependency licenses before redistribution.
 
