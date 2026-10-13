@@ -1,4 +1,5 @@
 import {pipeline, env} from '@huggingface/transformers'
+import { Logger } from '../modules/utils.js';
 
 // Configure for Chrome extension environment
 env.allowRemoteModels = true;
@@ -15,10 +16,10 @@ try {
   if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
     const wasmPath = chrome.runtime.getURL('wasm/');
     env.backends.onnx.wasm.wasmPaths = wasmPath;
-    console.log('[PrivacyWall] WASM path set to:', wasmPath);
+    Logger.debug('WASM path set to:', wasmPath);
   }
 } catch (e) {
-  console.warn('[PrivacyWall] Could not set WASM paths:', e);
+  Logger.warn('Could not set WASM paths:', e);
 }
 
 const MODEL_NAME = 'Xenova/bert-base-NER-uncased';
@@ -181,7 +182,7 @@ export async function detectEntities(text, threshold=0.5){
         value: entity.value.trim().replace(/\s+/g, ' ')
     }));
     
-    console.log('[PrivacyWall AI] Aggregated entities:', cleaned);
+    Logger.debug('[PrivacyWall AI] Aggregated entities:', cleaned.length, 'types:', [...new Set(cleaned.map(e => e.type))]);
     
     // Deduplicate by type - only show one finding per entity type
     // Keep the one with highest score or longest value
@@ -195,7 +196,7 @@ export async function detectEntities(text, threshold=0.5){
     
     const deduplicated = Array.from(byType.values());
     
-    console.log('[PrivacyWall AI] Final entities:', deduplicated);
+    Logger.debug('[PrivacyWall AI] Final entities:', deduplicated.length, 'types:', [...new Set(deduplicated.map(e => e.type))]);
     
     return deduplicated;
 }
