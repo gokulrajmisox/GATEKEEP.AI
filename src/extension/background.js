@@ -3,7 +3,11 @@
 // ============================================================================
 
 import { PATTERNS, MESSAGE_TYPES } from './modules/config.js';
-import { isSetupComplete, markSetupComplete } from './modules/settings.js';
+import { isSetupComplete, markSetupComplete, loadSettings } from './modules/settings.js';
+import { Logger } from './modules/utils.js';
+
+// Configure debug-gated logging from stored settings (defaults to OFF)
+loadSettings().then((s) => Logger.configure(s)).catch(() => { /* keep logging off */ });
 
 // Engine status tracking
 let isModelReady = false;
@@ -153,7 +157,7 @@ async function scanWithAI(text) {
       text: text
     });
     
-    console.log('[PrivacyWall] Got response from offscreen:', response);
+    Logger.debug('[PrivacyWall] Got response from offscreen:', { success: response && response.success, findingCount: response && response.data ? response.data.length : 0 });
     
     if (response && response.success) {
       return response.data || [];
@@ -216,7 +220,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     scanWithAI(request.text)
       .then(result => {
-        console.log('[PrivacyWall] SCAN_TEXT result:', result);
+        Logger.debug('[PrivacyWall] SCAN_TEXT result:', result.length, 'findings');
         sendResponse({ success: true, data: result });
       })
       .catch(err => {
