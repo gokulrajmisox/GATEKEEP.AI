@@ -149,6 +149,9 @@ export const DEFAULT_BEHAVIOR = {
   showPastedText: true,      // Show what was pasted in modal
   strictMode: false,         // Auto-block without asking
   scanWhileTyping: true,     // Real-time typing detection
+  debug: false, // Console debug logging for developers; OFF by default so prompts/PII never reach the console
+  
+  
 };
 
 /**
