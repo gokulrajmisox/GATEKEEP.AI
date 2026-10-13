@@ -121,7 +121,7 @@ export class Scanner {
       return [];
     }
     
-    Logger.info("scanWithAI called, engineStatus:", this.engineStatus, "text:", text);
+    Logger.debug("scanWithAI called, engineStatus:", this.engineStatus, "textLength:", text ? text.length : 0);
     
     if (!this.engineStatus.isReachable || !text) {
       Logger.info("scanWithAI - skipping. isReachable:", this.engineStatus.isReachable, "text:", !!text);
@@ -134,7 +134,7 @@ export class Scanner {
       chrome.runtime.sendMessage(
         { type: MESSAGE_TYPES.SCAN_TEXT, text: text },
         (response) => {
-          Logger.info("scanWithAI - got response:", response);
+          Logger.debug("scanWithAI - got response:", { success: response && response.success, findingCount: response && response.data ? response.data.length : 0 });
           
           if (chrome.runtime.lastError) {
             Logger.warn("AI scan failed:", chrome.runtime.lastError.message);
