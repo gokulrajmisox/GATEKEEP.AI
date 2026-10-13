@@ -81,6 +81,7 @@ async function initialize() {
   try {
     // Load settings from storage
     settings = await loadSettings();
+    Logger.configure(settings);
     Logger.info('Settings loaded:', {
       protectAllSites: settings.protectAllSites,
       aiEnabled: settings.aiSettings.enabled,
@@ -178,6 +179,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Reload settings and reinitialize if needed
     loadSettings().then((newSettings) => {
       settings = newSettings;
+      Logger.configure(settings);
       
       // Update scanner and modal with new settings
       if (scanner) scanner.updateSettings(settings);

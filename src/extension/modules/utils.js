@@ -2,16 +2,27 @@
 // UTILITY FUNCTIONS
 // ============================================================================
 
-/**
- * Stringify objects for logging (handles arrays of objects)
- */
+// Debug-gated logging. Console output is OFF by default so that scanned
+// prompt text and detected PII values never reach the browser console
+// unless the user explicitly enables the "debug" setting.
+let debugEnabled = false;
+
+function sanitizeFinding(f) {
+  if (debugEnabled) {
+    return '{' + f.type + ': "' + (f.value || 'detected') + '"}';
+  }
+  return '{' + f.type + ': "REDACTED"}';
+}
 function stringify(arg) {
   if (arg === null || arg === undefined) return String(arg);
+  if (typeof arg === 'string' && !debugEnabled && arg.length > 300) {
+    return arg.slice(0, 300) + '…[truncated]';
+  }
   if (typeof arg === 'object') {
     try {
-      // For arrays of findings, show summary
+      // For arrays of findings, show summary (values redacted unless debugging)
       if (Array.isArray(arg) && arg.length > 0 && arg[0].type) {
-        return arg.map(f => `{${f.type}: "${f.value || 'detected'}"}`).join(', ');
+        return arg.map(sanitizeFinding).join(', ');
       }
       return JSON.stringify(arg);
     } catch {
@@ -22,31 +33,53 @@ function stringify(arg) {
 }
 
 /**
- * Logger utility for consistent logging with prefixes
+ * Logger utility for consistent, debug-gated logging
  */
 export const Logger = {
   /**
-   * Log informational message
-   * @param {string} msg - Message to log
-   * @param {...any} args - Additional arguments
+   * Enable or disable debug logging. Default is OFF.
+   * @param {boolean} enabled
+   */
+  setDebugEnabled(enabled) {
+    debugEnabled = enabled === true;
+  },
+
+  /**
+   * Configure the logger from extension settings.
+   * Reads settings.behavior.debug (default false).
+   * @param {Object} settings - Extension settings object
+   */
+  configure(settings) {
+    this.setDebugEnabled(!!(settings && settings.behavior && settings.behavior.debug === true));
+  },
+
+  /**
+   * Log a verbose diagnostic message — only when debug mode is enabled.
+   * Even in debug mode, never pass raw prompt text; log lengths/counts/types.
+   */
+  debug: (msg, ...args) => {
+    if (!debugEnabled) return;
+    console.log('[PrivacyWall] ' + msg, ...args.map(stringify));
+  },
+  /**
+   * Log informational message — only when debug mode is enabled.
    */
   info: (msg, ...args) => {
+    if (!debugEnabled) return;
     console.log(`[PrivacyWall] ${msg}`, ...args.map(stringify));
   },
 
   /**
-   * Log warning message
-   * @param {string} msg - Message to log
-   * @param {...any} args - Additional arguments
+   * Log warning message — only when debug mode is enabled.
    */
   warn: (msg, ...args) => {
+    if (!debugEnabled) return;
     console.warn(`[PrivacyWall] ${msg}`, ...args.map(stringify));
   },
 
   /**
-   * Log error message
-   * @param {string} msg - Message to log
-   * @param {...any} args - Additional arguments
+   * Log error message — always logs, but finding values are redacted
+   * unless debug mode is enabled.
    */
   error: (msg, ...args) => {
     console.error(`[PrivacyWall] ${msg}`, ...args.map(stringify));

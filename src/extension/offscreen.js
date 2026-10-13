@@ -5,6 +5,11 @@
 // Required because Service Workers don't support WASM with XMLHttpRequest
 
 import { initializeModel, detectEntities } from './lib/transformer-detector.js';
+import { Logger } from './modules/utils.js';
+import { loadSettings } from './modules/settings.js';
+
+// Configure debug-gated logging from stored settings (defaults to OFF)
+loadSettings().then((s) => Logger.configure(s)).catch(() => { /* keep logging off */ });
 
 let isModelReady = false;
 let isModelLoading = false;
