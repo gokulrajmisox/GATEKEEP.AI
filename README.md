@@ -70,6 +70,12 @@ GATEKEEP.AI is intended to process scanned text locally in the browser. The repo
 
 GATEKEEP.AI is a preventive privacy aid. It is not a guarantee that sensitive information can never leave a device, and it does not replace organizational policy, access controls, or a complete enterprise DLP system.
 
+### Console logging and debug mode
+
+GATEKEEP.AI never writes scanned prompt text or detected values to the browser console by default. All console output goes through a debug-gated `Logger` (`src/extension/modules/utils.js`) that stays silent unless the `debug` behavior setting is enabled (`false` by default; see `src/extension/modules/settings-defaults.js`). Even error logs redact detected values and truncate long strings while debug mode is off.
+
+Debug mode is intended for extension developers only: when enabled it may print diagnostic details to the console, which is readable by anyone with DevTools open. There is currently no settings-page toggle for it; enable it only while testing with synthetic data by setting `behavior.debug` to `true` in the extension's stored settings.
+
 ## Screenshots
 
 <table>
